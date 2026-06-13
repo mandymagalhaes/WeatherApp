@@ -2,102 +2,159 @@
 
 ## 1. Visão Geral
 
-Aplicação web responsiva de previsão do tempo. O front-end consome duas APIs públicas do Open-Meteo (Geocoding + Weather) e renderiza os dados sem necessidade de backend próprio.
+Aplicação web **multi-página (MPA)** responsiva de previsão do tempo. Cada página é um HTML independente que consome APIs públicas e compartilha dados via `localStorage`. Sem backend próprio.
 
 ```
-┌──────────┐     ┌──────────────┐     ┌──────────────────┐
-│  Browser │ ──▶ │ Open-Meteo   │ ◀── │ Geocoding API    │
-│  (SPA)   │     │ API Gateway  │     │ /v1/search       │
-└──────────┘     └──────┬───────┘     └──────────────────┘
-                        │
-                  ┌─────▼──────┐
-                  │ Weather    │
-                  │ API        │
-                  │ /v1/forecast│
-                  └────────────┘
+┌──────────────┐
+│  index.html  │ ──┐
+│  (home)      │   │
+└──────────────┘   │   ┌──────────────────────┐
+                   ├──▶│  Open-Meteo           │
+┌──────────────┐   │   │  ├ Geocoding API      │
+│ details.html │ ──┤   │  └ Weather API        │
+│ (horário)    │   │   └──────────────────────┘
+└──────────────┘   │
+                   │   ┌──────────────────────┐
+┌──────────────┐   │   │  Nominatim (OSM)     │
+│ favorites.html│ ──┼──▶│  reverse geocode     │
+└──────────────┘   │   └──────────────────────┘
+                   │
+┌──────────────┐   │   ┌──────────────────────┐
+│ config.html  │ ──┘   │  localStorage         │
+│ (tema/unid.) │       │  (store.js)           │
+└──────────────┘       └──────────────────────┘
+```
+
+### Fluxo de dados entre páginas
+
+```
+Query params na URL (lat, lon, name, country)
+  Home ←─────────────→ Detalhes
+  Home ←─────────────→ Favoritos
+  Detalhes ←─────────→ Favoritos
+
+localStorage (store.js)
+  Home/Favoritos → localStorage.set → persistência
+  Favoritos/Detalhes/Home → localStorage.get → leitura
+  Config → localStorage.set → tema e unidade
 ```
 
 ## 2. Organização do Código
 
 ```
 WeatherApp/
-├── index.html          # Entry point, estrutura semântica
+├── index.html              # Home — busca + clima atual + 7 dias + ações
+├── details.html            # Detalhes — previsão horária 24h + gráfico canvas
+├── favorites.html          # Favoritos — lista de cidades salvas
+├── config.html             # Configurações — tema e unidade
 ├── css/
-│   └── style.css       # Mobile-first, design system
+│   ├── style.css           # Base: nav, variáveis CSS, tema escuro, botões
+│   ├── details.css         # Tabela horária, grid de detalhes, gráfico
+│   ├── favorites.css       # Cards de cidades favoritas
+│   └── config.css          # Formulário de configuração
 ├── js/
-│   ├── app.js          # Orquestrador, eventos, ciclo de vida
-│   ├── api.js          # Camada de consumo das APIs
-│   ├── ui.js           # Manipulação do DOM
-│   └── utils.js        # Helpers: WMO codes, datas, debounce
+│   ├── utils.js            # WMO codes, getWeatherInfo, formatDate, debounce
+│   ├── api.js              # Chamadas HTTP: Geocoding, Weather, Nominatim
+│   ├── store.js            # localStorage: favoritos, config, tema
+│   ├── ui.js               # Renderização DOM da home (loading, error, weather, forecast, suggestions)
+│   └── pages/
+│       ├── home.js         # Orquestrador da home: autocomplete, geolocation, favoritos, query params
+│       ├── details.js      # Orquestrador dos detalhes: dados horários, tabela, gráfico canvas
+│       ├── favorites.js    # Lista de favoritos com atalhos para home/detalhes
+│       └── config.js       # Formulário de configuração (tema, unidade)
+├── README.md
 └── ARCHITECTURE.md
 ```
 
-Cada módulo tem responsabilidade única:
-- **api.js** — isola chamadas HTTP, parsing, tratamento de erros de rede. Trocar de API significa mexer só aqui.
-- **ui.js** — renderiza dados no DOM, gerencia estados (loading, erro, vazio). Desacoplado da lógica de negócio.
-- **utils.js** — funções puras e configurações (mapeamento WMO).
-- **app.js** — glue code: conecta eventos do usuário → API → UI.
+### Responsabilidades
+
+| Arquivo | Responsabilidade |
+|---------|-----------------|
+| `utils.js` | Constantes WMO, funções puras (formatação de data, debounce) |
+| `api.js` | Camada HTTP — isola `fetch`, parsing, erros de rede. Mudar de API = mexer só aqui |
+| `store.js` | `localStorage` — CRUD de favoritos, config, `applyTheme()` |
+| `ui.js` | DOM da home — loading, erro, clima atual, previsão 7 dias, autocomplete |
+| `pages/home.js` | Glue code da home — eventos, autocomplete, geolocation, query params, favoritos |
+| `pages/details.js` | Carrega dados horários, renderiza tabela e gráfico canvas |
+| `pages/favorites.js` | Lê `store.getFavorites()`, renderiza cards, navegação |
+| `pages/config.js` | Lê/salva `store.getConfig()` / `store.setConfig()` |
 
 ## 3. Consumo de APIs
 
 | API | Endpoint | Uso |
 |-----|----------|-----|
-| Geocoding | `GET /v1/search?name={cidade}` | Converte nome de cidade em lat/lon |
-| Weather | `GET /v1/forecast?latitude={lat}&longitude={lon}` | Retorna clima atual + 7 dias |
+| Geocoding | `GET /v1/search?name={cidade}&count=5` | Autocomplete + busca de cidade |
+| Weather | `GET /v1/forecast?latitude={lat}&longitude={lon}&current=...&daily=...` | Clima atual + 7 dias |
+| Weather | `GET /v1/forecast?latitude={lat}&longitude={lon}&hourly=...&forecast_hours=24` | Previsão horária (detalhes) |
+| Nominatim | `GET /reverse?lat={lat}&lon={lon}&format=json` | Reverse geocode para geolocalização |
 
-Tratamento de erros:
-- Timeout e rede: `fetch` com `AbortController`
-- HTTP não-2xx: mensagem amigável ao usuário
-- Cidade não encontrada: validação no JSON de resposta
+### Tratamento de erros
+- **Rede**: `fetch` lança erro em rede offline, capturado com `try/catch`
+- **HTTP não-2xx**: mensagem amigável ao usuário
+- **Cidade não encontrada**: validação no JSON de resposta (array vazio)
+- **Geolocalização**: mensagens específicas por código de erro (permissão negada, timeout, indisponível)
 
 ## 4. Escalabilidade
 
-### Horizontal (front-end)
-- **CDN**: assets estáticos (HTML, CSS, JS) servidos via CDN (Cloudflare, AWS CloudFront) reduz latência global.
-- **Cache de API**: respostas do Open-Meteo são cacheadas no navegador (Cache API / Service Worker) — previsão do tempo muda a cada hora, pode usar estratégia `stale-while-revalidate`.
-- **Lazy loading**: se adicionar gráficos ou mapas, carregar sob demanda.
+### Front-end (MPA)
+- **CDN**: assets estáticos (HTML, CSS, JS, imagens) servidos via CDN (Cloudflare, CloudFront) — cada página é um arquivo HTML independente, cacheável por URL
+- **Cache de API**: respostas do Open-Meteo cacheadas no navegador via `Cache-Control` e Service Worker futuramente
+- **Lazy loading**: páginas carregam sob demanda (navegação nativa do navegador)
 
 ### Se houvesse backend
-- Cache Redis para respostas de APIs externas (TTL de 30min).
-- Rate limiting por IP.
-- Backend stateless em containers (ECS/K8s) com auto-scaling baseado em CPU/requisições.
+- Cache Redis para respostas de APIs externas (TTL de 30min)
+- Rate limiting por IP
+- Backend stateless em containers (ECS/K8s) com auto-scaling
 
 ### Dados
-- Open-Meteo é gratuito e sem chave de API para até 10.000 req/dia. Para escala maior, usar cache próprio ou plano pago.
+- Open-Meteo: gratuito, sem chave, até 10.000 req/dia. Para escala maior: cache próprio ou plano pago
+- Nominatim: limite de 1 req/s. Para produção, alternativas: Google Geocoding, Mapbox
 
 ## 5. Banco de Dados
 
-### Sem backend → sem banco
-Nesta arquitetura 100% client-side, **não há banco de dados**. Os dados são voláteis (estado da UI).
+### Persistência atual
+`localStorage` no navegador via `store.js`:
 
-### Se houvesse necessidade de persistência (favoritos, histórico):
+```
+localStorage
+├── clima_favoritos: [
+│     { id, name, country, latitude, longitude }
+│   ]
+└── clima_config: {
+      unit: "celsius" | "fahrenheit",
+      theme: "auto" | "light" | "dark"
+    }
+```
+
+### Se houvesse necessidade de backend (favoritos entre dispositivos, histórico):
 ```
 ┌────────────────────────────────────────────────┐
 │ PostgreSQL (relacional)                        │
 │                                                 │
-│ usuários: id, email, senha_hash, created_at    │
-│ favoritos: id, user_id, cidade, lat, lon       │
-│ historico: id, user_id, cidade, dados_json, ts │
+│ usuarios: id, email, senha_hash, created_at     │
+│ favoritos: id, user_id, cidade, lat, lon        │
+│ historico: id, user_id, cidade, dados_json, ts  │
 └────────────────────────────────────────────────┘
 ```
-- **PostgreSQL** escolhido por: maturidade, JSONB para dados semi-estruturados, índices GIN para busca textual de cidades.
-- Alternativa: **SQLite** (embarcado) se o app fosse nativo mobile com dados locais.
+- **PostgreSQL** escolhido por: maturidade, JSONB para dados semi-estruturados, índices GIN para busca textual
+- Alternativa: **SQLite** (embarcado) para modo offline-first
 
 ## 6. Segurança
 
-### Front-end
-- **CSP** (Content-Security-Policy) no header HTML para evitar XSS.
-- **Sanitização** de input do usuário antes de buscar cidade.
-- **HTTPS** obrigatório (Open-Meteo só aceita HTTPS).
-- Sem chaves/segredos no client-side (Open-Meteo não requer API key).
+### Front-end (MPA)
+- **CSP** (Content-Security-Policy) no `<meta>` ou header HTTP para mitigar XSS
+- **Sanitização** de input do usuário antes de enviar para APIs (`encodeURIComponent`)
+- **HTTPS** obrigatório (Open-Meteo e Nominatim só aceitam HTTPS)
+- Sem chaves/segredos no client-side (nenhuma API requer key)
+- **`rel="noopener"`** em links externos
 
 ### Se houvesse backend
-- Autenticação: JWT com refresh token (httpOnly cookie).
-- Rate limiting por IP (nginx/express-rate-limit).
-- Helmet.js para headers de segurança.
-- Validação de input no server (OWASP Top 10).
-- Criptografia de senhas com bcrypt (cost 12).
-- Prepared statements para queries SQL.
+- Autenticação: JWT com refresh token em httpOnly cookie
+- Rate limiting por IP (nginx ou express-rate-limit)
+- Helmet.js para headers de segurança
+- Validação de input no server (OWASP Top 10)
+- Criptografia de senhas com bcrypt (cost 12)
+- Prepared statements para queries SQL
 
 ## 7. Nuvem (Cloud)
 
@@ -107,32 +164,35 @@ Nesta arquitetura 100% client-side, **não há banco de dados**. Os dados são v
 Cloudflare DNS
     │
     ▼
-CloudFront / CDN ──▶ S3 (static assets)
+CloudFront / CDN ──▶ S3 (static assets: HTML, CSS, JS)
     │
     ▼
 ALB ──▶ ECS Fargate (containers Node.js)
            │
-           ├── Redis ElastiCache (cache)
-           └── RDS PostgreSQL
+           ├── Redis ElastiCache (cache de APIs externas)
+           └── RDS PostgreSQL (dados persistentes)
 ```
 
 | Serviço | Função | Justificativa |
 |---------|--------|---------------|
-| **CloudFront** | CDN | Distribuição global, baixa latência, SSL automático |
-| **S3** | Static hosting | Barato, versionamento de assets |
-| **ECS Fargate** | Backend API | Serverless containers, sem gerenciar servidor |
-| **ElastiCache Redis** | Cache | Respostas de API externa em memória, sub-ms |
-| **RDS PostgreSQL** | Dados persistentes | Multi-AZ, backup automático, escalável até 16TB |
-| **Route53** | DNS | Health checks, failover |
+| **CloudFront** | CDN | Distribuição global, baixa latência, SSL automático, cache de HTML/CSS/JS |
+| **S3** | Static hosting | Armazenamento barato, versionamento de assets, integração com CloudFront |
+| **ECS Fargate** | Backend API | Serverless containers, sem gerenciar servidores, auto-scaling |
+| **ElastiCache Redis** | Cache | Respostas de API externa em memória (~sub-ms), TTL configurável |
+| **RDS PostgreSQL** | Dados persistentes | Multi-AZ, backup automático, escalável até 16TB, read replicas |
+| **Route53** | DNS | Health checks, failover geográfico |
 
 ### Escalabilidade na nuvem
-- **Auto-scaling**: ECS Service Auto Scaling baseado em CPU ou RequestCount.
-- **Multi-AZ**: RDS e ECS distribuídos em 3 availability zones.
-- **Read replicas**: RDS read replicas para queries de histórico.
-- **Caching em 3 níveis**: CDN (edge) → Redis (app) → Browser Cache API (client).
+- **Auto-scaling**: ECS Service Auto Scaling baseado em CPU ou RequestCount
+- **Multi-AZ**: RDS e ECS distribuídos em 3 availability zones
+- **Read replicas**: RDS read replicas para queries de histórico e favoritos
+- **Caching em 3 níveis**: CDN (edge) → Redis (app) → Browser Cache API + localStorage (client)
+- **Deploy estático**: como MPA, cada página HTML pode ser deployada independentemente no S3/CloudFront
 
 ## 8. Mobile
 
-CSS responsivo (mobile-first) torna o app utilizável em qualquer dispositivo. Para experiência nativa:
-- **PWA**: manifest.json + Service Worker permitem instalação no home screen e funcionamento offline parcial.
-- **React Native / Expo**: reuso da lógica JS, componentes nativos.
+CSS responsivo (mobile-first, breakpoint 480px) com `backdrop-filter` e glassmorphism. A nav bar se adapta com espaçamento menor em telas pequenas.
+
+Para experiência nativa:
+- **PWA**: `manifest.json` + Service Worker permitem instalação no home screen e cache offline
+- **React Native / Expo**: reuso da lógica JS (api.js, utils.js, store.js) com componentes nativos
