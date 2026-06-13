@@ -1,6 +1,7 @@
 const API = {
   GEOCODING_BASE: 'https://geocoding-api.open-meteo.com/v1',
   WEATHER_BASE: 'https://api.open-meteo.com/v1',
+  NOMINATIM_BASE: 'https://nominatim.openstreetmap.org',
 
   async searchCities(query) {
     const url = `${this.GEOCODING_BASE}/search?name=${encodeURIComponent(query)}&count=5&language=pt&format=json`;
@@ -24,5 +25,18 @@ const API = {
     const res = await fetch(url);
     if (!res.ok) throw new Error('Erro ao buscar clima');
     return res.json();
+  },
+
+  async reverseGeocode(lat, lon) {
+    const url = `${this.NOMINATIM_BASE}/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=pt`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Erro ao obter localização');
+    const data = await res.json();
+    return {
+      name: data.address?.city || data.address?.town || data.address?.village || data.name || 'Sua localização',
+      country: data.address?.country || '',
+      latitude: lat,
+      longitude: lon,
+    };
   },
 };

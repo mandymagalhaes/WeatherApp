@@ -6,6 +6,7 @@ const UI = {
       searchForm: document.getElementById('search-form'),
       searchInput: document.getElementById('search-input'),
       autocompleteList: document.getElementById('autocomplete-list'),
+      geoBtn: document.getElementById('geo-btn'),
       loading: document.getElementById('loading'),
       error: document.getElementById('error'),
       currentWeather: document.getElementById('current-weather'),

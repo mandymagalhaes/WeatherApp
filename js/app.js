@@ -78,6 +78,8 @@
         UI.hideSuggestions();
       }
     });
+
+    UI.elements.geoBtn.addEventListener('click', getGeolocation);
   });
 
   function updateActive(items, index) {
@@ -120,5 +122,31 @@
     } catch (err) {
       UI.showError(err.message);
     }
+  }
+
+  async function getGeolocation() {
+    if (!navigator.geolocation) {
+      UI.showError('Geolocalização não suportada neste navegador');
+      return;
+    }
+    UI.showLoading();
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const geo = await API.reverseGeocode(pos.coords.latitude, pos.coords.longitude);
+          await fetchWeather(geo.latitude, geo.longitude, geo.name, geo.country);
+        } catch (err) {
+          UI.showError(err.message);
+        }
+      },
+      (err) => {
+        let msg = 'Erro ao obter localização';
+        if (err.code === 1) msg = 'Permissão de localização negada';
+        else if (err.code === 2) msg = 'Localização indisponível';
+        else if (err.code === 3) msg = 'Tempo de localização esgotado';
+        UI.showError(msg);
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+    );
   }
 })();
