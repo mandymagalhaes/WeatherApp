@@ -357,6 +357,18 @@ h1 {
   gap: 0.5rem;
   overflow-x: auto;
   padding-bottom: 0.5rem;
+  mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  -webkit-overflow-scrolling: touch;
+}
+
+#forecast-list::-webkit-scrollbar {
+  height: 4px;
+}
+
+#forecast-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
 }
 
 .forecast-day {
@@ -412,7 +424,7 @@ footer a {
 
 @media (max-width: 480px) {
   #app {
-    padding: 0.75rem;
+    padding: 1rem 0.75rem;
   }
 
   h1 {
@@ -433,9 +445,19 @@ footer a {
     flex-direction: column;
   }
 
+  #search-input {
+    padding: 0.85rem 1.25rem;
+    font-size: 1.05rem;
+  }
+
   #geo-btn {
     align-self: flex-start;
-    padding: 0.6rem 0.75rem;
+    padding: 0.75rem;
+  }
+
+  #search-btn {
+    padding: 0.85rem 1.5rem;
+    font-size: 1.05rem;
   }
 
   #current-weather {
@@ -456,6 +478,18 @@ footer a {
 
   .forecast-day {
     min-width: 75px;
-    padding: 0.75rem 0.5rem;
+    padding: 0.85rem 0.75rem;
+  }
+
+  .forecast-day .day-icon {
+    font-size: 1.6rem;
+  }
+
+  .forecast-day .day-name {
+    font-size: 0.8rem;
+  }
+
+  .forecast-day .day-temps {
+    font-size: 0.8rem;
   }
 }
