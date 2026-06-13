@@ -132,8 +132,8 @@
       table.appendChild(row);
     }
 
-    drawChart(hourly);
     document.getElementById('detail-hourly').classList.remove('hidden');
+    drawChart(hourly);
   }
 
   function drawChart(hourly) {
