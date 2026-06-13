@@ -5,14 +5,14 @@ Aplicação web responsiva de previsão do tempo que consome as APIs gratuitas d
 ## Funcionalidades
 
 - Busca de clima por nome da cidade com **autocomplete**
-- **Geolocalização** automática (botão 📍)
-- Exibição do clima atual (temperatura, sensação térmica, umidade, vento)
-- Previsão para **7 dias**
+- **Geolocalização** automática via botão
+- Clima atual (temperatura, sensação térmica, umidade, vento)
+- Previsão para **7 dias** com scroll horizontal
 - Previsão **horária (24h)** com gráfico canvas e tabela
 - **Favoritos** — cidades salvas no navegador
-- **Tema escuro** automático ou configurável
-- **Multi-página** com navegação entre home, detalhes, favoritos e configurações
-- Design responsivo (mobile-first)
+- **Multi-página** com navegação entre home, detalhes e favoritos
+- Design responsivo (mobile-first) com tema escuro
+- Ícones **Lucide** (map-pin, bar-chart-3, star, trash-2)
 
 ## Páginas
 
@@ -21,17 +21,14 @@ Aplicação web responsiva de previsão do tempo que consome as APIs gratuitas d
 | `index.html` | Home — busca + clima atual + 7 dias |
 | `details.html` | Detalhes — previsão horária com gráfico e tabela |
 | `favorites.html` | Favoritos — cidades salvas com atalhos |
-| `config.html` | Configurações — unidade de temperatura e tema |
 
 ## Como usar
-
-Abra o `index.html` no navegador ou sirva com qualquer servidor estático:
 
 ```bash
 npx serve .
 ```
 
-Digite o nome de uma cidade e clique em **Buscar**. Use a nav bar para navegar entre as páginas.
+Abra o navegador, digite uma cidade e clique em **Buscar**. Navegue entre as páginas pela nav bar.
 
 ## APIs utilizadas
 
@@ -47,23 +44,20 @@ Digite o nome de uma cidade e clique em **Buscar**. Use a nav bar para navegar e
 ├── index.html              # Home
 ├── details.html            # Detalhes (previsão horária)
 ├── favorites.html          # Favoritos
-├── config.html             # Configurações
 ├── css/
-│   ├── style.css           # Base + nav + variáveis + tema escuro
+│   ├── style.css           # Base: nav, variáveis, tema escuro, glassmorphism
 │   ├── details.css         # Tabela horária, grid, gráfico
-│   ├── favorites.css       # Cards de favoritos
-│   └── config.css          # Formulário de configuração
+│   └── favorites.css       # Cards de favoritos
 ├── js/
-│   ├── utils.js            # WMO codes, helpers, debounce
-│   ├── api.js              # Consumo das APIs
-│   ├── store.js            # localStorage (favoritos, config, tema)
+│   ├── utils.js            # WMO codes, getWeatherInfo, formatDate, debounce
+│   ├── api.js              # Chamadas HTTP: Geocoding, Weather, Nominatim
+│   ├── store.js            # localStorage (favoritos, tema)
 │   ├── ui.js               # Renderização DOM da home
 │   └── pages/
 │       ├── home.js         # Lógica da home
-│       ├── details.js      # Lógica dos detalhes
-│       ├── favorites.js    # Lógica dos favoritos
-│       └── config.js       # Lógica da configuração
-└── ARCHITECTURE.md         # Documentação técnica
+│       ├── details.js      # Lógica dos detalhes (tabela, gráfico canvas)
+│       └── favorites.js    # Lógica dos favoritos
+└── ARCHITECTURE.md
 ```
 
 ## Arquitetura

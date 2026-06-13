@@ -19,10 +19,10 @@ Aplicação web **multi-página (MPA)** responsiva de previsão do tempo. Cada p
 │ favorites.html│ ──┼──▶│  reverse geocode     │
 └──────────────┘   │   └──────────────────────┘
                    │
-┌──────────────┐   │   ┌──────────────────────┐
-│ config.html  │ ──┘   │  localStorage         │
-│ (tema/unid.) │       │  (store.js)           │
-└──────────────┘       └──────────────────────┘
+                   │   ┌──────────────────────┐
+                   └──▶│  localStorage         │
+                       │  (store.js)           │
+                       └──────────────────────┘
 ```
 
 ### Fluxo de dados entre páginas
@@ -33,10 +33,14 @@ Query params na URL (lat, lon, name, country)
   Home ←─────────────→ Favoritos
   Detalhes ←─────────→ Favoritos
 
+sessionStorage (fallback)
+  Home → sessionStorage.setItem('lastCity')
+  Detalhes → sessionStorage.getItem('lastCity') se sem query params
+  Home → sessionStorage.getItem('lastCity') se sem query params
+
 localStorage (store.js)
-  Home/Favoritos → localStorage.set → persistência
-  Favoritos/Detalhes/Home → localStorage.get → leitura
-  Config → localStorage.set → tema e unidade
+  Home/Favoritos → localStorage.set → persistência de favoritos
+  Favoritos/Detalhes/Home → localStorage.get → leitura de favoritos
 ```
 
 ## 2. Organização do Código
@@ -46,22 +50,19 @@ WeatherApp/
 ├── index.html              # Home — busca + clima atual + 7 dias + ações
 ├── details.html            # Detalhes — previsão horária 24h + gráfico canvas
 ├── favorites.html          # Favoritos — lista de cidades salvas
-├── config.html             # Configurações — tema e unidade
 ├── css/
-│   ├── style.css           # Base: nav, variáveis CSS, tema escuro, botões
+│   ├── style.css           # Base: nav, variáveis CSS, tema escuro, botões, glassmorphism
 │   ├── details.css         # Tabela horária, grid de detalhes, gráfico
-│   ├── favorites.css       # Cards de cidades favoritas
-│   └── config.css          # Formulário de configuração
+│   └── favorites.css       # Cards de cidades favoritas
 ├── js/
 │   ├── utils.js            # WMO codes, getWeatherInfo, formatDate, debounce
 │   ├── api.js              # Chamadas HTTP: Geocoding, Weather, Nominatim
-│   ├── store.js            # localStorage: favoritos, config, tema
+│   ├── store.js            # localStorage: favoritos, tema
 │   ├── ui.js               # Renderização DOM da home (loading, error, weather, forecast, suggestions)
 │   └── pages/
 │       ├── home.js         # Orquestrador da home: autocomplete, geolocation, favoritos, query params
 │       ├── details.js      # Orquestrador dos detalhes: dados horários, tabela, gráfico canvas
-│       ├── favorites.js    # Lista de favoritos com atalhos para home/detalhes
-│       └── config.js       # Formulário de configuração (tema, unidade)
+│       └── favorites.js   # Lista de favoritos com atalhos para home/detalhes
 ├── README.md
 └── ARCHITECTURE.md
 ```
@@ -72,12 +73,17 @@ WeatherApp/
 |---------|-----------------|
 | `utils.js` | Constantes WMO, funções puras (formatação de data, debounce) |
 | `api.js` | Camada HTTP — isola `fetch`, parsing, erros de rede. Mudar de API = mexer só aqui |
-| `store.js` | `localStorage` — CRUD de favoritos, config, `applyTheme()` |
+| `store.js` | `localStorage` — CRUD de favoritos, tema via `applyTheme()` |
 | `ui.js` | DOM da home — loading, erro, clima atual, previsão 7 dias, autocomplete |
-| `pages/home.js` | Glue code da home — eventos, autocomplete, geolocation, query params, favoritos |
+| `pages/home.js` | Glue code da home — eventos, autocomplete, geolocation, query params, sessionStorage fallback |
 | `pages/details.js` | Carrega dados horários, renderiza tabela e gráfico canvas |
 | `pages/favorites.js` | Lê `store.getFavorites()`, renderiza cards, navegação |
-| `pages/config.js` | Lê/salva `store.getConfig()` / `store.setConfig()` |
+
+### Bibliotecas externas
+
+| Biblioteca | CDN | Uso |
+|------------|-----|-----|
+| **Lucide** | `https://unpkg.com/lucide@latest` | Ícones: map-pin, bar-chart-3, star, trash-2 |
 
 ## 3. Consumo de APIs
 
@@ -97,7 +103,7 @@ WeatherApp/
 ## 4. Escalabilidade
 
 ### Front-end (MPA)
-- **CDN**: assets estáticos (HTML, CSS, JS, imagens) servidos via CDN (Cloudflare, CloudFront) — cada página é um arquivo HTML independente, cacheável por URL
+- **CDN**: assets estáticos (HTML, CSS, JS) servidos via CDN (Cloudflare, CloudFront) — cada página é um arquivo HTML independente, cacheável por URL
 - **Cache de API**: respostas do Open-Meteo cacheadas no navegador via `Cache-Control` e Service Worker futuramente
 - **Lazy loading**: páginas carregam sob demanda (navegação nativa do navegador)
 
@@ -121,7 +127,6 @@ localStorage
 │     { id, name, country, latitude, longitude }
 │   ]
 └── clima_config: {
-      unit: "celsius" | "fahrenheit",
       theme: "auto" | "light" | "dark"
     }
 ```
@@ -191,7 +196,7 @@ ALB ──▶ ECS Fargate (containers Node.js)
 
 ## 8. Mobile
 
-CSS responsivo (mobile-first, breakpoint 480px) com `backdrop-filter` e glassmorphism. A nav bar se adapta com espaçamento menor em telas pequenas.
+CSS responsivo (mobile-first, breakpoint 480px) com `backdrop-filter` e glassmorphism. Nav bar e inputs adaptam padding em telas pequenas. Previsão de 7 dias com `mask-image` para indicar scroll horizontal.
 
 Para experiência nativa:
 - **PWA**: `manifest.json` + Service Worker permitem instalação no home screen e cache offline
