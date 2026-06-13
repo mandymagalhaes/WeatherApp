@@ -242,6 +242,12 @@ h1 {
   stroke: #ffd700;
 }
 
+.btn-icon .fav-filled polygon,
+.btn-icon .fav-filled path {
+  fill: inherit;
+  stroke: inherit;
+}
+
 .actions {
   display: flex;
   gap: 0.5rem;
