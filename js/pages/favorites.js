@@ -58,6 +58,7 @@
 
       const removeBtn = document.createElement('button');
       removeBtn.className = 'btn-icon';
+      removeBtn.dataset.action = 'remove';
       removeBtn.title = 'Remover';
       const trashIcon = document.createElement('i');
       trashIcon.dataset.lucide = 'trash-2';

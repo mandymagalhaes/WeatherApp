@@ -39,6 +39,10 @@
   flex-shrink: 0;
 }
 
+[data-action="remove"] svg {
+  color: #e74c3c;
+}
+
 @media (max-width: 480px) {
   .fav-card {
     flex-direction: column;
