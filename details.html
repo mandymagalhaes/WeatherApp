@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes — Clima Tempo</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/details.css">
+</head>
+<body>
+  <nav class="nav-bar">
+    <a href="/">🏠 Clima</a>
+    <a href="details.html">📊 Detalhes</a>
+    <a href="favorites.html">⭐ Favoritos</a>
+    <a href="config.html">⚙️</a>
+  </nav>
+
+  <div id="app">
+    <header>
+      <h1>Detalhes</h1>
+      <a href="/" class="btn-link">← Voltar</a>
+    </header>
+
+    <main>
+      <div id="loading" class="hidden">Carregando...</div>
+      <div id="error" class="hidden"></div>
+
+      <section id="detail-header" class="hidden">
+        <h2 id="detail-city-name"></h2>
+        <span id="detail-country"></span>
+        <button id="detail-fav-btn" class="btn-icon" title="Salvar nos favoritos">☆</button>
+      </section>
+
+      <section id="detail-current" class="hidden">
+        <div class="detail-card">
+          <span id="detail-icon"></span>
+          <span id="detail-temp"></span>
+          <span id="detail-desc"></span>
+        </div>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="label">Sensação</span>
+            <span class="value" id="detail-feels"></span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Umidade</span>
+            <span class="value" id="detail-humidity"></span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Vento</span>
+            <span class="value" id="detail-wind"></span>
+          </div>
+        </div>
+      </section>
+
+      <section id="detail-hourly" class="hidden">
+        <h3>Próximas 24 horas</h3>
+        <canvas id="hourly-chart"></canvas>
+        <div id="hourly-table"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Dados: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p>
+    </footer>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/pages/details.js"></script>
+</body>
+</html>
