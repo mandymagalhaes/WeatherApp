@@ -27,6 +27,15 @@ const API = {
     return res.json();
   },
 
+  async getHourly(lat, lon) {
+    const url = `${this.WEATHER_BASE}/forecast?latitude=${lat}&longitude=${lon}` +
+      `&hourly=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m,precipitation_probability` +
+      `&timezone=auto&forecast_hours=24`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Erro ao buscar previsão horária');
+    return res.json();
+  },
+
   async reverseGeocode(lat, lon) {
     const url = `${this.NOMINATIM_BASE}/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=pt`;
     const res = await fetch(url);
