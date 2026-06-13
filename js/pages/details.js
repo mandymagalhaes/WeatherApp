@@ -25,11 +25,14 @@
     }
 
     const favBtn = document.getElementById('detail-fav-btn');
+    const favIcon = document.getElementById('detail-fav-icon');
+    if (window.lucide) lucide.createIcons();
+
     favBtn.addEventListener('click', () => {
       if (currentLat === null) return;
       if (STORE.isFavorite(currentLat, currentLon)) {
         STORE.removeFavorite(currentLat, currentLon);
-        favBtn.textContent = '☆';
+        favIcon.classList.remove('fav-filled');
       } else {
         STORE.addFavorite({
           name: currentName,
@@ -37,7 +40,7 @@
           latitude: currentLat,
           longitude: currentLon,
         });
-        favBtn.textContent = '★';
+        favIcon.classList.add('fav-filled');
       }
     });
   });
@@ -63,8 +66,8 @@
     document.getElementById('detail-country').textContent = country;
     document.getElementById('detail-header').classList.remove('hidden');
 
-    const favBtn = document.getElementById('detail-fav-btn');
-    favBtn.textContent = STORE.isFavorite(lat, lon) ? '★' : '☆';
+    const favIcon = document.getElementById('detail-fav-icon');
+    favIcon.classList.toggle('fav-filled', STORE.isFavorite(lat, lon));
   }
 
   function renderCurrent(data) {

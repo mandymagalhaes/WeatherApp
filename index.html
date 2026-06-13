@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clima Tempo</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest" defer></script>
 </head>
 <body>
   <nav class="nav-bar">
@@ -22,7 +23,7 @@
           <input type="text" id="search-input" placeholder="Buscar cidade..." autocomplete="off">
           <ul id="autocomplete-list" class="hidden"></ul>
         </div>
-        <button type="button" id="geo-btn" title="Usar localização atual">📍</button>
+        <button type="button" id="geo-btn" title="Usar localização atual"><i data-lucide="map-pin"></i></button>
         <button type="submit" id="search-btn">Buscar</button>
       </form>
     </header>
@@ -56,8 +57,8 @@
           </div>
         </div>
         <div class="actions hidden" id="weather-actions">
-          <a href="#" id="details-link" class="btn-link">📊 Detalhes</a>
-          <button id="fav-btn" class="btn-icon" title="Salvar nos favoritos">☆</button>
+          <a href="#" id="details-link" class="btn-link"><i data-lucide="bar-chart-3"></i> Detalhes</a>
+          <button id="fav-btn" class="btn-icon" title="Salvar nos favoritos"><i data-lucide="star" id="fav-icon"></i></button>
         </div>
       </section>
 

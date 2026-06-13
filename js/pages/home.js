@@ -13,7 +13,10 @@
     const actions = document.getElementById('weather-actions');
     const detailsLink = document.getElementById('details-link');
     const favBtn = document.getElementById('fav-btn');
+    const favIcon = document.getElementById('fav-icon');
     let selectedIndex = -1;
+
+    if (window.lucide) lucide.createIcons();
 
     const params = new URLSearchParams(window.location.search);
     const paramLat = parseFloat(params.get('lat'));
@@ -115,7 +118,7 @@
       if (currentLat === null) return;
       if (STORE.isFavorite(currentLat, currentLon)) {
         STORE.removeFavorite(currentLat, currentLon);
-        favBtn.textContent = '☆';
+        favIcon.classList.remove('fav-filled');
       } else {
         STORE.addFavorite({
           name: currentName,
@@ -123,7 +126,7 @@
           latitude: currentLat,
           longitude: currentLon,
         });
-        favBtn.textContent = '★';
+        favIcon.classList.add('fav-filled');
       }
     });
   });
@@ -173,10 +176,10 @@
 
       const actions = document.getElementById('weather-actions');
       const detailsLink = document.getElementById('details-link');
-      const favBtn = document.getElementById('fav-btn');
+      const favIcon = document.getElementById('fav-icon');
       const params = new URLSearchParams({ lat, lon, name: cityName, country: country || '' });
       detailsLink.href = `details.html?${params}`;
-      favBtn.textContent = STORE.isFavorite(lat, lon) ? '★' : '☆';
+      favIcon.classList.toggle('fav-filled', STORE.isFavorite(lat, lon));
       actions.classList.remove('hidden');
     } catch (err) {
       UI.showError(err.message);
