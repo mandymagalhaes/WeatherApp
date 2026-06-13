@@ -25,8 +25,10 @@
     }
 
     const favBtn = document.getElementById('detail-fav-btn');
-    const favIcon = document.getElementById('detail-fav-icon');
+
     if (window.lucide) lucide.createIcons();
+
+    const favIcon = document.getElementById('detail-fav-icon');
 
     favBtn.addEventListener('click', () => {
       if (currentLat === null) return;

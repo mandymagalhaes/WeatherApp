@@ -235,8 +235,8 @@ h1 {
 }
 
 .btn-icon .fav-filled {
-  fill: currentColor;
-  color: #ffd700;
+  fill: #ffd700;
+  stroke: #ffd700;
 }
 
 .actions {

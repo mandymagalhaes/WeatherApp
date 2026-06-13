@@ -13,10 +13,11 @@
     const actions = document.getElementById('weather-actions');
     const detailsLink = document.getElementById('details-link');
     const favBtn = document.getElementById('fav-btn');
-    const favIcon = document.getElementById('fav-icon');
-    let selectedIndex = -1;
 
     if (window.lucide) lucide.createIcons();
+
+    const favIcon = document.getElementById('fav-icon');
+    let selectedIndex = -1;
 
     const params = new URLSearchParams(window.location.search);
     const paramLat = parseFloat(params.get('lat'));
