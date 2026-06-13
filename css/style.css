@@ -82,7 +82,7 @@ body {
 
 header {
   text-align: center;
-  padding: 1.5rem 0;
+  padding: 0.5rem 0 1rem;
 }
 
 h1 {
@@ -424,11 +424,11 @@ footer a {
 
 @media (max-width: 480px) {
   #app {
-    padding: 1rem 0.75rem;
+    padding: 0.75rem;
   }
 
-  h1 {
-    font-size: 1.4rem;
+  header {
+    padding: 0.25rem 0 0.75rem;
   }
 
   .nav-bar {
