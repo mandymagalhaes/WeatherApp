@@ -2,15 +2,18 @@ const API = {
   GEOCODING_BASE: 'https://geocoding-api.open-meteo.com/v1',
   WEATHER_BASE: 'https://api.open-meteo.com/v1',
 
-  async searchCity(query) {
+  async searchCities(query) {
     const url = `${this.GEOCODING_BASE}/search?name=${encodeURIComponent(query)}&count=5&language=pt&format=json`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('Erro ao buscar cidade');
     const data = await res.json();
-    if (!data.results || data.results.length === 0) {
-      throw new Error('Cidade não encontrada');
-    }
-    return data.results[0];
+    return data.results || [];
+  },
+
+  async searchCity(query) {
+    const results = await this.searchCities(query);
+    if (results.length === 0) throw new Error('Cidade não encontrada');
+    return results[0];
   },
 
   async getWeather(lat, lon) {

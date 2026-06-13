@@ -11,7 +11,10 @@
     <header>
       <h1>Clima Tempo</h1>
       <form id="search-form">
-        <input type="text" id="search-input" placeholder="Buscar cidade..." autocomplete="off">
+        <div class="search-container">
+          <input type="text" id="search-input" placeholder="Buscar cidade..." autocomplete="off">
+          <ul id="autocomplete-list" class="hidden"></ul>
+        </div>
         <button type="submit" id="search-btn">Buscar</button>
       </form>
     </header>

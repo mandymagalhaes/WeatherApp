@@ -5,6 +5,7 @@ const UI = {
     this.elements = {
       searchForm: document.getElementById('search-form'),
       searchInput: document.getElementById('search-input'),
+      autocompleteList: document.getElementById('autocomplete-list'),
       loading: document.getElementById('loading'),
       error: document.getElementById('error'),
       currentWeather: document.getElementById('current-weather'),
@@ -77,6 +78,30 @@ const UI = {
     }
 
     this.elements.forecast.classList.remove('hidden');
+  },
+
+  renderSuggestions(results) {
+    const list = this.elements.autocompleteList;
+    list.innerHTML = '';
+
+    results.forEach((r) => {
+      const li = document.createElement('li');
+      li.dataset.lat = r.latitude;
+      li.dataset.lon = r.longitude;
+      li.dataset.name = r.name;
+      li.dataset.country = r.country || '';
+      li.innerHTML = `
+        <span class="suggestion-name">${r.name}</span>
+        <span class="suggestion-region">${r.admin1 || ''}${r.admin1 && r.country ? ', ' : ''}${r.country || ''}</span>
+      `;
+      list.appendChild(li);
+    });
+
+    this.elements.autocompleteList.classList.remove('hidden');
+  },
+
+  hideSuggestions() {
+    this.elements.autocompleteList.classList.add('hidden');
   },
 
   clear() {
