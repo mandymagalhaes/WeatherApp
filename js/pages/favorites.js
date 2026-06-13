@@ -1,6 +1,7 @@
 (function () {
   document.addEventListener('DOMContentLoaded', () => {
     STORE.initTheme();
+    if (window.lucide) lucide.createIcons();
     renderFavorites();
   });
 
@@ -57,8 +58,10 @@
 
       const removeBtn = document.createElement('button');
       removeBtn.className = 'btn-icon';
-      removeBtn.textContent = '🗑️';
       removeBtn.title = 'Remover';
+      const trashIcon = document.createElement('i');
+      trashIcon.dataset.lucide = 'trash-2';
+      removeBtn.appendChild(trashIcon);
       removeBtn.addEventListener('click', () => {
         STORE.removeFavorite(fav.latitude, fav.longitude);
         renderFavorites();
@@ -72,5 +75,7 @@
       card.appendChild(actions);
       list.appendChild(card);
     });
+
+    if (window.lucide) lucide.createIcons();
   }
 })();

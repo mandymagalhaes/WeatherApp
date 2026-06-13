@@ -175,6 +175,7 @@ h1 {
 #geo-btn svg {
   width: 20px;
   height: 20px;
+  color: #fff;
 }
 
 #geo-btn:hover {
