@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Favoritos — Clima Tempo</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/favorites.css">
+</head>
+<body>
+  <nav class="nav-bar">
+    <a href="/">🏠 Clima</a>
+    <a href="details.html">📊 Detalhes</a>
+    <a href="favorites.html">⭐ Favoritos</a>
+    <a href="config.html">⚙️</a>
+  </nav>
+
+  <div id="app">
+    <header>
+      <h1>⭐ Favoritos</h1>
+    </header>
+
+    <main>
+      <div id="fav-list"></div>
+      <p id="fav-empty" class="hidden">Nenhuma cidade salva ainda.</p>
+    </main>
+
+    <footer>
+      <p>Dados: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></p>
+    </footer>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/pages/favorites.js"></script>
+</body>
+</html>

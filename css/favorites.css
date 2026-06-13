@@ -1,0 +1,52 @@
+#fav-empty {
+  text-align: center;
+  padding: 2rem;
+  opacity: 0.7;
+}
+
+.fav-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  gap: 1rem;
+}
+
+.fav-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.fav-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.fav-country {
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+.fav-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .fav-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .fav-actions {
+    align-self: stretch;
+    justify-content: flex-end;
+  }
+}
