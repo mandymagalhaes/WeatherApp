@@ -20,11 +20,24 @@
     let selectedIndex = -1;
 
     const params = new URLSearchParams(window.location.search);
-    const paramLat = parseFloat(params.get('lat'));
-    const paramLon = parseFloat(params.get('lon'));
-    const paramName = params.get('name');
+    let paramLat = parseFloat(params.get('lat'));
+    let paramLon = parseFloat(params.get('lon'));
+    let paramName = params.get('name');
+    let paramCountry = params.get('country') || '';
+
+    if (isNaN(paramLat) || isNaN(paramLon) || !paramName) {
+      const last = sessionStorage.getItem('lastCity');
+      if (last) {
+        const parsed = JSON.parse(last);
+        paramLat = parsed.lat;
+        paramLon = parsed.lon;
+        paramName = parsed.name || '';
+        paramCountry = parsed.country || '';
+      }
+    }
+
     if (!isNaN(paramLat) && !isNaN(paramLon) && paramName) {
-      fetchWeather(paramLat, paramLon, paramName, params.get('country') || '');
+      fetchWeather(paramLat, paramLon, paramName, paramCountry);
       input.value = paramName;
     }
 
