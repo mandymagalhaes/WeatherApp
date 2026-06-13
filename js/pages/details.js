@@ -8,10 +8,21 @@
     STORE.initTheme();
 
     const params = new URLSearchParams(window.location.search);
-    const lat = parseFloat(params.get('lat'));
-    const lon = parseFloat(params.get('lon'));
-    const name = params.get('name') || '';
-    const country = params.get('country') || '';
+    let lat = parseFloat(params.get('lat'));
+    let lon = parseFloat(params.get('lon'));
+    let name = params.get('name') || '';
+    let country = params.get('country') || '';
+
+    if (isNaN(lat) || isNaN(lon)) {
+      const last = sessionStorage.getItem('lastCity');
+      if (last) {
+        const parsed = JSON.parse(last);
+        lat = parsed.lat;
+        lon = parsed.lon;
+        name = parsed.name || '';
+        country = parsed.country || '';
+      }
+    }
 
     if (!isNaN(lat) && !isNaN(lon)) {
       currentLat = lat;

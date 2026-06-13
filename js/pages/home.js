@@ -174,6 +174,7 @@
       currentLon = lon;
       currentName = cityName;
       currentCountry = country;
+      sessionStorage.setItem('lastCity', JSON.stringify({ lat, lon, name: cityName, country: country || '' }));
 
       const actions = document.getElementById('weather-actions');
       const detailsLink = document.getElementById('details-link');
