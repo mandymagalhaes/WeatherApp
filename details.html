@@ -17,7 +17,20 @@
 
   <div id="app">
     <main>
-      <div id="loading" class="hidden">Carregando...</div>
+      <div id="loading" class="hidden">
+        <div class="skeleton-card">
+          <div class="skeleton skeleton-icon-wrap"></div>
+          <div class="skeleton skeleton-temp" style="width:30%"></div>
+          <div class="skeleton skeleton-line" style="width:40%"></div>
+        </div>
+        <div class="skeleton-grid" style="margin-bottom:1.5rem">
+          <div class="skeleton skeleton-item"></div>
+          <div class="skeleton skeleton-item"></div>
+          <div class="skeleton skeleton-item"></div>
+        </div>
+        <div class="skeleton skeleton-section-title"></div>
+        <div class="skeleton" style="height:200px;border-radius:12px"></div>
+      </div>
       <div id="error" class="hidden"></div>
 
       <section id="detail-header" class="hidden">
@@ -55,7 +68,7 @@
       </section>
 
       <div style="text-align: center; margin-top: 1.5rem;">
-        <a href="/" class="btn-link">← Voltar</a>
+        <a href="/" class="btn-link"><i data-lucide="arrow-left"></i> Voltar</a>
       </div>
     </main>
 
@@ -67,6 +80,7 @@
   <script src="js/utils.js"></script>
   <script src="js/api.js"></script>
   <script src="js/store.js"></script>
+  <script src="js/theme.js"></script>
   <script src="js/pages/details.js"></script>
 </body>
 </html>
