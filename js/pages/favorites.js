@@ -59,7 +59,7 @@
         name: fav.name,
         country: fav.country,
       });
-      viewBtn.href = `/?${params}`;
+      viewBtn.href = `index.html?${params}`;
 
       const detailsBtn = document.createElement('a');
       detailsBtn.className = 'btn-link';
