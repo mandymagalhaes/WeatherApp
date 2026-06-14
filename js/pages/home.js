@@ -7,6 +7,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     STORE.initTheme();
     UI.init();
+    if (window.THEME) THEME.init();
 
     const input = UI.elements.searchInput;
     const list = UI.elements.autocompleteList;
@@ -17,6 +18,7 @@
     if (window.lucide) lucide.createIcons();
 
     const favIcon = document.getElementById('fav-icon');
+    if (favIcon) favIcon.removeAttribute('data-lucide');
     let selectedIndex = -1;
 
     const params = new URLSearchParams(window.location.search);
@@ -132,7 +134,7 @@
       if (currentLat === null) return;
       if (STORE.isFavorite(currentLat, currentLon)) {
         STORE.removeFavorite(currentLat, currentLon);
-        favIcon.classList.remove('fav-filled');
+        setFavState(favIcon, false);
       } else {
         STORE.addFavorite({
           name: currentName,
@@ -140,7 +142,7 @@
           latitude: currentLat,
           longitude: currentLon,
         });
-        favIcon.classList.add('fav-filled');
+        setFavState(favIcon, true);
       }
     });
   });
@@ -187,17 +189,34 @@
       currentLon = lon;
       currentName = cityName;
       currentCountry = country;
-      sessionStorage.setItem('lastCity', JSON.stringify({ lat, lon, name: cityName, country: country || '' }));
+      sessionStorage.setItem('lastCity', JSON.stringify({ lat, lon, name: cityName, country: country || '', weatherCode: weather.current.weather_code }));
 
       const actions = document.getElementById('weather-actions');
       const detailsLink = document.getElementById('details-link');
       const favIcon = document.getElementById('fav-icon');
       const params = new URLSearchParams({ lat, lon, name: cityName, country: country || '' });
       detailsLink.href = `details.html?${params}`;
-      favIcon.classList.toggle('fav-filled', STORE.isFavorite(lat, lon));
+      setFavState(favIcon, STORE.isFavorite(lat, lon));
       actions.classList.remove('hidden');
     } catch (err) {
       UI.showError(err.message);
+    }
+  }
+
+  function setFavState(el, filled) {
+    if (!el) return;
+    if (filled) {
+      el.querySelectorAll('polygon, path').forEach(child => {
+        child.setAttribute('fill', '#fbbf24');
+        child.setAttribute('stroke', '#fbbf24');
+      });
+      el.setAttribute('fill', '#fbbf24');
+    } else {
+      el.querySelectorAll('polygon, path').forEach(child => {
+        child.setAttribute('fill', 'none');
+        child.removeAttribute('stroke');
+      });
+      el.setAttribute('fill', 'none');
     }
   }
 
