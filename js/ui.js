@@ -48,14 +48,22 @@ const UI = {
 
     this.elements.cityName.textContent = city;
     this.elements.country.textContent = country;
-    this.elements.weatherIcon.textContent = info.icon;
-    this.elements.temperature.textContent = `${Math.round(current.temperature_2m)}°C`;
+    this.elements.weatherIcon.innerHTML = `<i data-lucide="${info.lucide}"></i>`;
+    const tempVal = Math.round(current.temperature_2m);
+    this.elements.temperature.textContent = `${tempVal}°C`;
+    this.elements.temperature.className = '';
+    if (tempVal < 10) this.elements.temperature.classList.add('temp-cold');
+    else if (tempVal < 25) this.elements.temperature.classList.add('temp-mild');
+    else if (tempVal < 35) this.elements.temperature.classList.add('temp-warm');
+    else this.elements.temperature.classList.add('temp-hot');
     this.elements.weatherDescription.textContent = info.desc;
     this.elements.feelsLike.textContent = `${Math.round(current.apparent_temperature)}°C`;
     this.elements.humidity.textContent = `${current.relative_humidity_2m}%`;
     this.elements.wind.textContent = `${current.wind_speed_10m} km/h`;
 
     this.elements.currentWeather.classList.remove('hidden');
+    if (window.lucide) lucide.createIcons();
+    if (window.THEME) THEME.apply(current.weather_code);
   },
 
   renderForecast(data) {
@@ -66,9 +74,10 @@ const UI = {
       const info = getWeatherInfo(daily.weather_code[i]);
       const day = document.createElement('div');
       day.className = 'forecast-day';
+      day.style.animation = `fadeInUp 0.3s ease-out ${0.15 + i * 0.06}s both`;
       day.innerHTML = `
         <div class="day-name">${formatDate(daily.time[i])}</div>
-        <div class="day-icon">${info.icon}</div>
+        <div class="day-icon"><i data-lucide="${info.lucide}"></i></div>
         <div class="day-temps">
           <span class="high">${Math.round(daily.temperature_2m_max[i])}°</span>
           <span class="low">${Math.round(daily.temperature_2m_min[i])}°</span>
@@ -79,6 +88,7 @@ const UI = {
     }
 
     this.elements.forecast.classList.remove('hidden');
+    if (window.lucide) lucide.createIcons();
   },
 
   renderSuggestions(results) {
