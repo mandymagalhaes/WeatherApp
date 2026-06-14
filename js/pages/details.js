@@ -40,6 +40,15 @@
 
     if (window.lucide) lucide.createIcons();
 
+    const navToggle = document.getElementById('nav-toggle');
+    const navLinks = document.getElementById('nav-links');
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.nav-bar')) navLinks.classList.remove('open');
+      });
+    }
+
     const favIcon = document.getElementById('detail-fav-icon');
     if (favIcon) favIcon.removeAttribute('data-lucide');
 
