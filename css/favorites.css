@@ -1,7 +1,11 @@
 #fav-empty {
   text-align: center;
   padding: 2rem;
-  opacity: 0.7;
+  color: var(--text-muted);
+}
+
+#fav-list {
+  animation: fadeInUp 0.4s ease-out;
 }
 
 .fav-card {
@@ -9,11 +13,19 @@
   justify-content: space-between;
   align-items: center;
   background: var(--card-bg);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
   padding: 1rem 1.25rem;
   margin-bottom: 0.75rem;
   gap: 1rem;
+  transition: background 0.3s, transform 0.25s;
+}
+
+.fav-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.15);
 }
 
 .fav-info {
@@ -29,7 +41,7 @@
 
 .fav-country {
   font-size: 0.85rem;
-  opacity: 0.7;
+  color: var(--text-muted);
 }
 
 .fav-actions {
@@ -40,7 +52,7 @@
 }
 
 [data-action="remove"] svg {
-  color: #e74c3c;
+  color: #e8a7a1;
 }
 
 @media (max-width: 480px) {
