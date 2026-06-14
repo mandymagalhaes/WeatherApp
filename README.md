@@ -1,6 +1,6 @@
 # Clima Tempo
 
-Aplicação web responsiva de previsão do tempo que consome as APIs gratuitas do [Open-Meteo](https://open-meteo.com/).
+Aplicação web responsiva de previsão do tempo com design cinematográfico (Terra vista da órbita) e glassmorphism. Consome as APIs gratuitas do [Open-Meteo](https://open-meteo.com/).
 
 ## Funcionalidades
 
@@ -11,8 +11,9 @@ Aplicação web responsiva de previsão do tempo que consome as APIs gratuitas d
 - Previsão **horária (24h)** com gráfico canvas e tabela
 - **Favoritos** — cidades salvas no navegador
 - **Multi-página** com navegação entre home, detalhes e favoritos
-- Design responsivo (mobile-first) com tema escuro
-- Ícones **Lucide** (map-pin, bar-chart-3, star, trash-2)
+- Design cinematográfico: fundo Terra da órbita com CSS gradients + glassmorphism
+- Cores de acento dinâmicas conforme o clima (THEME engine)
+- Temperatura numerada com cor gradual (frio → azul, quente → laranja)
 
 ## Páginas
 
@@ -45,13 +46,14 @@ Abra o navegador, digite uma cidade e clique em **Buscar**. Navegue entre as pá
 ├── details.html            # Detalhes (previsão horária)
 ├── favorites.html          # Favoritos
 ├── css/
-│   ├── style.css           # Base: nav, variáveis, tema escuro, glassmorphism
+│   ├── style.css           # Base: nav, variáveis, Terra da órbita, glassmorphism
 │   ├── details.css         # Tabela horária, grid, gráfico
 │   └── favorites.css       # Cards de favoritos
 ├── js/
 │   ├── utils.js            # WMO codes, getWeatherInfo, formatDate, debounce
 │   ├── api.js              # Chamadas HTTP: Geocoding, Weather, Nominatim
 │   ├── store.js            # localStorage (favoritos, tema)
+│   ├── theme.js            # Cores de acento dinâmicas por clima
 │   ├── ui.js               # Renderização DOM da home
 │   └── pages/
 │       ├── home.js         # Lógica da home
