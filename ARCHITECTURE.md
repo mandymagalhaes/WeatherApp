@@ -1,4 +1,4 @@
-# Arquitetura — Clima Tempo
+# Arquitetura — WeatherApp
 
 ## 1. Visão Geral
 

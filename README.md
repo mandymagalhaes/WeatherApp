@@ -1,4 +1,4 @@
-# Clima Tempo
+# WeatherApp
 
 Aplicação web responsiva de previsão do tempo com design cinematográfico (Terra vista da órbita) e glassmorphism. Consome as APIs gratuitas do [Open-Meteo](https://open-meteo.com/).
 
