@@ -81,10 +81,16 @@ body::before {
   padding: 0.2rem;
   border-radius: 50%;
   transition: color 0.25s;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 .nav-toggle:hover {
   color: var(--text);
+}
+
+.nav-toggle:focus-visible {
+  outline: none;
 }
 
 .nav-toggle svg {
