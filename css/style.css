@@ -224,13 +224,11 @@ header {
 
 #geo-btn {
   padding: 0.7rem;
-  border: 1px solid rgba(255,255,255,0.08);
+  border: none;
   border-radius: var(--card-radius);
-  background: var(--input-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: none;
   cursor: pointer;
-  transition: background 0.25s, border-color 0.25s;
+  transition: opacity 0.25s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -243,8 +241,7 @@ header {
 }
 
 #geo-btn:hover {
-  background: rgba(255,255,255,0.14);
-  border-color: rgba(255,255,255,0.15);
+  opacity: 0.8;
 }
 
 #search-btn {
@@ -751,7 +748,6 @@ footer a:hover {
   #geo-btn {
     align-self: auto;
     padding: 0.7rem;
-    border-radius: var(--card-radius-sm);
     flex-shrink: 0;
   }
 
