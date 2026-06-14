@@ -77,16 +77,16 @@ body::before {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text-muted);
-  padding: 0.2rem;
-  border-radius: 50%;
-  transition: color 0.25s;
+  color: var(--text);
+  padding: 0.35rem;
+  border-radius: 8px;
+  transition: background 0.2s;
   -webkit-tap-highlight-color: transparent;
   outline: none;
 }
 
 .nav-toggle:hover {
-  color: var(--text);
+  background: var(--btn-bg);
 }
 
 .nav-toggle:focus-visible {
@@ -96,6 +96,15 @@ body::before {
 .nav-toggle svg {
   width: 22px;
   height: 22px;
+  display: block;
+}
+
+.nav-brand {
+  display: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
 }
 
 .nav-links {
@@ -649,6 +658,11 @@ footer a:hover {
   text-decoration: underline;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -678,12 +692,18 @@ footer a:hover {
     gap: 0;
     padding: 0.5rem 1rem;
     position: relative;
+    justify-content: flex-start;
   }
 
   .nav-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .nav-brand {
+    display: block;
+    margin-left: 0.5rem;
   }
 
   .nav-links {
@@ -697,8 +717,9 @@ footer a:hover {
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     border-bottom: 1px solid var(--nav-border);
-    padding: 0.25rem 0;
+    padding: 0.5rem 0;
     gap: 0;
+    animation: fadeIn 0.2s ease-out;
   }
 
   .nav-links.open {
@@ -706,10 +727,15 @@ footer a:hover {
   }
 
   .nav-links a {
-    padding: 0.7rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
     border-radius: 0;
     width: 100%;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .nav-links a:last-child {
+    border-bottom: none;
   }
 
   #search-form {
